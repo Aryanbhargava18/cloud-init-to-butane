@@ -133,3 +133,5 @@ func FindKeyLine(node *yaml.Node, key string) int {
 	}
 	return 0
 }
+
+// Cloud-init AST parser maintains exact source line numbers for diagnostic reporting
