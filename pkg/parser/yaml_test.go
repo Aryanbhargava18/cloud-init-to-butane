@@ -279,3 +279,15 @@ func TestParse_MultipleUsersAuthorizedKeys(t *testing.T) {
 	}
 }
 
+
+func TestParse_EmptyWriteFiles(t *testing.T) {
+	input := []byte("write_files: []\n")
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cfg.WriteFiles) != 0 {
+		t.Errorf("expected 0 write_files, got %d", len(cfg.WriteFiles))
+	}
+}
+
