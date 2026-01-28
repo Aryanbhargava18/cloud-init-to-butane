@@ -307,3 +307,18 @@ write_files:
 
 
 
+
+func TestTranspile_EmptyInputString(t *testing.T) {
+	cfg, root, _, err := parser.Parse([]byte(""))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("transpile failed: %v", err)
+	}
+	if len(out.Storage.Files) != 0 {
+		t.Errorf("expected 0 files, got %d", len(out.Storage.Files))
+	}
+}
+
