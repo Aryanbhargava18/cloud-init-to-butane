@@ -348,3 +348,5 @@ func isNetworkd(path string) bool {
 // Note: check for leaks
 
 // clean up later
+
+// Octal file permissions are formatted to 4-character strings for Ignition specification
