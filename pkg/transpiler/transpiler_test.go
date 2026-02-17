@@ -322,3 +322,23 @@ func TestTranspile_EmptyInputString(t *testing.T) {
 	}
 }
 
+
+func TestTranspile_SingleUnitEnableStatus(t *testing.T) {
+	input := []byte(`coreos:
+  units:
+    - name: foo.service
+      enable: true
+`)
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("transpile failed: %v", err)
+	}
+	if len(out.Systemd.Units) != 1 {
+		t.Fatalf("expected 1 unit, got %d", len(out.Systemd.Units))
+	}
+}
+
