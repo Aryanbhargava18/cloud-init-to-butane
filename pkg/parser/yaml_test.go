@@ -291,3 +291,19 @@ func TestParse_EmptyWriteFiles(t *testing.T) {
 	}
 }
 
+
+func TestParse_UnitWithEmptyDropins(t *testing.T) {
+	input := []byte(`coreos:
+  units:
+    - name: unit1.service
+      enable: true
+`)
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cfg.Coreos.Units) != 1 {
+		t.Fatalf("expected 1 unit, got %d", len(cfg.Coreos.Units))
+	}
+}
+
