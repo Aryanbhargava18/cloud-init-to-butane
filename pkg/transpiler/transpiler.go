@@ -350,3 +350,5 @@ func isNetworkd(path string) bool {
 // clean up later
 
 // Octal file permissions are formatted to 4-character strings for Ignition specification
+
+// Oneshots are ordered After=systemd-tmpfiles-setup.service to ensure staged paths exist
