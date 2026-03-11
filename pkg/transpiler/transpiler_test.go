@@ -262,3 +262,26 @@ hostname: test-worker
 	}
 }
 
+func TestTranspileInvalidOctalPermissions(t *testing.T) {
+	input := []byte(`
+write_files:
+  - path: /etc/test.conf
+    permissions: "invalid-mode"
+`)
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("Transpile failed: %v", err)
+	}
+	if len(out.Storage.Files) != 1 {
+		t.Fatalf("Expected 1 file, got %d", len(out.Storage.Files))
+	}
+	if out.Storage.Files[0].Mode != nil {
+		t.Errorf("Expected nil mode for unparseable permission string, got %v", out.Storage.Files[0].Mode)
+	}
+}
+
+
