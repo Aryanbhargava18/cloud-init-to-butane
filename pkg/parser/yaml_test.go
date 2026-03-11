@@ -240,4 +240,23 @@ write_files:
 	}
 }
 
+func TestParse_SingleUserWithoutGroups(t *testing.T) {
+	input := []byte(`
+users:
+  - name: deployer
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+`)
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cfg.Users) != 1 || cfg.Users[0].Name != "deployer" {
+		t.Fatalf("expected 1 user named deployer, got %+v", cfg.Users)
+	}
+	if len(cfg.Users[0].Groups) != 0 {
+		t.Errorf("expected 0 groups, got %v", cfg.Users[0].Groups)
+	}
+}
+
+
 
