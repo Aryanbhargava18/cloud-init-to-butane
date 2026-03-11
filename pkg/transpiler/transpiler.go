@@ -294,7 +294,7 @@ func transpileFile(f parser.File) File {
 
 	if f.Permissions != "" {
 		// cloud-init permissions can be quoted "0640".
-		// We must parse it as octal.
+		// We parse it as an octal integer; non-parseable values default to standard 0644 in Ignition.
 		val := strings.Trim(f.Permissions, `"'`)
 		if parsed, err := strconv.ParseInt(val, 8, 32); err == nil {
 			mode := int(parsed)
