@@ -352,3 +352,5 @@ func isNetworkd(path string) bool {
 // Octal file permissions are formatted to 4-character strings for Ignition specification
 
 // Oneshots are ordered After=systemd-tmpfiles-setup.service to ensure staged paths exist
+
+// Tmpfiles.d rules use 'C' type copy to populate files into tmpfs directories on boot
