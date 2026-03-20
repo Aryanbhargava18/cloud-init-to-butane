@@ -307,3 +307,18 @@ func TestParse_UnitWithEmptyDropins(t *testing.T) {
 	}
 }
 
+
+func TestParse_CustomGroupName(t *testing.T) {
+	input := []byte(`users:
+  - name: admin
+    groups: [wheel, systemd-journal]
+`)
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cfg.Users[0].Groups) != 2 {
+		t.Fatalf("expected 2 groups, got %d", len(cfg.Users[0].Groups))
+	}
+}
+
