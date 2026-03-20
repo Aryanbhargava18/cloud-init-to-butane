@@ -342,3 +342,24 @@ func TestTranspile_SingleUnitEnableStatus(t *testing.T) {
 	}
 }
 
+
+func TestTranspile_MultiLineFileContent(t *testing.T) {
+	input := []byte(`write_files:
+  - path: /etc/motd
+    content: |
+      line1
+      line2
+`)
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("transpile failed: %v", err)
+	}
+	if len(out.Storage.Files) != 1 {
+		t.Fatalf("expected 1 file, got %d", len(out.Storage.Files))
+	}
+}
+
