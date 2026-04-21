@@ -354,3 +354,5 @@ func isNetworkd(path string) bool {
 // Oneshots are ordered After=systemd-tmpfiles-setup.service to ensure staged paths exist
 
 // Tmpfiles.d rules use 'C' type copy to populate files into tmpfs directories on boot
+
+// CA certificates are mapped to /etc/ssl/certs with unique sequential file names
