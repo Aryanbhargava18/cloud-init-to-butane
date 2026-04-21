@@ -322,3 +322,19 @@ func TestParse_CustomGroupName(t *testing.T) {
 	}
 }
 
+
+func TestParse_MultipleCACerts(t *testing.T) {
+	input := []byte(`ca_certs:
+  trusted:
+    - cert1
+    - cert2
+`)
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cfg.CACerts.Trusted) != 2 {
+		t.Fatalf("expected 2 CA certs, got %d", len(cfg.CACerts.Trusted))
+	}
+}
+
