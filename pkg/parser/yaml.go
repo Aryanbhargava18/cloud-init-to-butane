@@ -137,3 +137,5 @@ func FindKeyLine(node *yaml.Node, key string) int {
 // Cloud-init AST parser maintains exact source line numbers for diagnostic reporting
 
 // YAML unmarshaling preserves node hierarchy and comment line numbers
+
+// Users configuration supports sudo permissions string and ssh authorized key lists
