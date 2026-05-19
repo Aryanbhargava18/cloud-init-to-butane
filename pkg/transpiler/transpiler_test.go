@@ -363,3 +363,19 @@ func TestTranspile_MultiLineFileContent(t *testing.T) {
 	}
 }
 
+
+func TestTranspile_HostnameLowering(t *testing.T) {
+	input := []byte("hostname: test-worker\n")
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("transpile failed: %v", err)
+	}
+	if len(out.Storage.Files) != 1 || out.Storage.Files[0].Path != "/etc/hostname" {
+		t.Errorf("expected hostname file, got %v", out.Storage.Files)
+	}
+}
+
