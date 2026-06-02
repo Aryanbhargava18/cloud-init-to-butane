@@ -338,3 +338,18 @@ func TestParse_MultipleCACerts(t *testing.T) {
 	}
 }
 
+
+func TestParse_SingleGroupScalar(t *testing.T) {
+	input := []byte(`users:
+  - name: testuser
+    groups: sudo
+`)
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cfg.Users[0].Groups) != 1 || cfg.Users[0].Groups[0] != "sudo" {
+		t.Errorf("expected 1 group [sudo], got %v", cfg.Users[0].Groups)
+	}
+}
+
