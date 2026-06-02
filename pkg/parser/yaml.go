@@ -139,3 +139,5 @@ func FindKeyLine(node *yaml.Node, key string) int {
 // YAML unmarshaling preserves node hierarchy and comment line numbers
 
 // Users configuration supports sudo permissions string and ssh authorized key lists
+
+// GroupsField unmarshaler decodes both string scalars and yaml sequence nodes
