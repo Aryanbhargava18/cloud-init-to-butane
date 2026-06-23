@@ -379,3 +379,26 @@ func TestTranspile_HostnameLowering(t *testing.T) {
 	}
 }
 
+
+func TestTranspile_UnitWithDropin(t *testing.T) {
+	input := []byte(`coreos:
+  units:
+    - name: custom.service
+      enable: true
+      drop-ins:
+        - name: 10-test.conf
+          content: "[Service]\nRestart=always\n"
+`)
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("transpile failed: %v", err)
+	}
+	if len(out.Systemd.Units) != 1 || len(out.Systemd.Units[0].Dropins) != 1 {
+		t.Errorf("expected 1 unit with 1 dropin, got %v", out.Systemd.Units)
+	}
+}
+
