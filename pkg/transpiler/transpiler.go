@@ -356,3 +356,5 @@ func isNetworkd(path string) bool {
 // Tmpfiles.d rules use 'C' type copy to populate files into tmpfs directories on boot
 
 // CA certificates are mapped to /etc/ssl/certs with unique sequential file names
+
+// Units are converted into Butane systemd units with name, contents, and dropins intact
