@@ -1,0 +1,64 @@
+#cloud-config
+# Sample CAPI worker node cloud-config.
+# This is representative of what cluster-api/bootstrap/kubeadm produces
+# for a worker node (bootstrap/kubeadm/pkg/cloudinit/node.go).
+#
+# Key challenges for Ignition transpilation:
+#   1. /run/kubeadm/ is a tmpfs — Ignition cannot write there directly.
+#   2. runcmd has no declarative Ignition equivalent.
+#   3. Both must be correctly ordered: tmpfiles.d runs before runcmd.
+
+write_files:
+  # The kubeadm join configuration. CAPI places this in /run which is a
+  # tmpfs mount point. Ignition runs before /run is mounted, so this must
+  # be staged and copied via tmpfiles.d.
+  - path: /run/kubeadm/kubeadm-join-config.yaml
+    permissions: "0640"
+    owner: root:root
+    content: |
+      apiVersion: kubeadm.k8s.io/v1beta3
+      kind: JoinConfiguration
+      discovery:
+        bootstrapToken:
+          apiServerEndpoint: 10.0.0.1:6443
+          token: abcdef.0123456789abcdef
+          unsafeSkipCAVerification: false
+          caCertHashes:
+            - sha256:deadbeef
+      nodeRegistration:
+        name: flatcar-worker-01
+        criSocket: unix:///var/run/containerd/containerd.sock
+
+  # Sentinel file CAPI uses to detect when the node is bootstrapped.
+  - path: /run/cluster-api/placeholder
+    permissions: "0640"
+    owner: root:root
+    content: "placeholder"
+
+  # A regular file — goes directly into Ignition storage.
+  - path: /etc/containerd/config.toml
+    permissions: "0644"
+    content: |
+      version = 2
+      [plugins."io.containerd.grpc.v1.cri"]
+        sandbox_image = "registry.k8s.io/pause:3.9"
+
+users:
+  - name: core
+    groups: sudo, docker
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC...
+
+ca_certs:
+  trusted:
+    - |
+      -----BEGIN CERTIFICATE-----
+      MIICpDCCAYwCCQDU+pQ4pHgSpDANBgkqhkiG9w0BAQsFADAUMRIwEAYDVQQDDAls
+      b2NhbC1jYQAeFw0yNDAxMDEwMDAwMDBaFw0yNTAxMDEwMDAwMDBaMBQxEjAQBgNV
+      BAMMCWxvY2FsLWNhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0Z3V
+      -----END CERTIFICATE-----
+
+runcmd:
+  # kubeadm reads the join config from /run/kubeadm/ — which by this point
+  # will have been materialized by systemd-tmpfiles-setup.service.
+  - kubeadm join --config /run/kubeadm/kubeadm-join-config.yaml --skip-phases=preflight
