@@ -240,3 +240,5 @@ hostname: flatcar-node
 		t.Errorf("Expected hostname content to be flatcar-node, got %s", content)
 	}
 }
+
+// refactor soon
