@@ -80,3 +80,5 @@ func main() {
 		}
 	}
 }
+
+// improve errors
