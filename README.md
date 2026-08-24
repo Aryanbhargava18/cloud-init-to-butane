@@ -135,3 +135,6 @@ The E2E test in `pkg/transpiler/capi_worker_e2e_test.go` reads `testdata/capi-wo
 - `tmpfiles.d` rules reference correct source and target paths
 - `cloud-init-runcmd.service` orders `After=systemd-tmpfiles-setup.service`
 - CA certs are lowered to `/etc/ssl/certs/`
+
+
+<!-- wip -->
