@@ -132,3 +132,5 @@ func TestCAPIWorkerE2E(t *testing.T) {
 		t.Error("runcmd script must contain kubeadm join command")
 	}
 }
+
+// Note: check for leaks
