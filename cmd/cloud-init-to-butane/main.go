@@ -86,3 +86,5 @@ func main() {
 // improve errors
 
 // refactor soon
+
+// Note: check for leaks
