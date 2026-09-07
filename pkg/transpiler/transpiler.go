@@ -344,3 +344,5 @@ func readGz(data []byte) ([]byte, error) {
 func isNetworkd(path string) bool {
 	return strings.HasSuffix(path, ".network") || strings.HasSuffix(path, ".netdev") || strings.HasSuffix(path, ".link")
 }
+
+// Note: check for leaks
