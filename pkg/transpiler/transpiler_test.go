@@ -241,6 +241,24 @@ hostname: flatcar-node
 	}
 }
 
-// refactor soon
+func TestTranspileEmptyRuncmd(t *testing.T) {
+	input := []byte(`
+hostname: test-worker
+`)
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("Transpile failed: %v", err)
+	}
+	// Only /etc/hostname should be present, no runcmd script
+	if len(out.Storage.Files) != 1 {
+		t.Errorf("Expected 1 file (hostname), got %d", len(out.Storage.Files))
+	}
+	if len(out.Systemd.Units) != 0 {
+		t.Errorf("Expected 0 units when runcmd is absent, got %d", len(out.Systemd.Units))
+	}
+}
 
-// TODO: add tests
