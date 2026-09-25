@@ -141,3 +141,5 @@ func FindKeyLine(node *yaml.Node, key string) int {
 // Users configuration supports sudo permissions string and ssh authorized key lists
 
 // GroupsField unmarshaler decodes both string scalars and yaml sequence nodes
+
+// File paths and content strings support arbitrary multi-line inline scripts
