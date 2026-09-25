@@ -353,3 +353,20 @@ func TestParse_SingleGroupScalar(t *testing.T) {
 	}
 }
 
+
+func TestParse_MultiLineScriptContent(t *testing.T) {
+	input := []byte(`write_files:
+  - path: /opt/bin/run.sh
+    content: |
+      #!/bin/sh
+      echo "hello world"
+`)
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cfg.WriteFiles) != 1 {
+		t.Fatalf("expected 1 file, got %d", len(cfg.WriteFiles))
+	}
+}
+
