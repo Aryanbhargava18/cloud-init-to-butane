@@ -370,3 +370,18 @@ func TestParse_MultiLineScriptContent(t *testing.T) {
 	}
 }
 
+
+func TestParse_UserSudoDirective(t *testing.T) {
+	input := []byte(`users:
+  - name: sysadmin
+    sudo: ALL=(ALL) NOPASSWD:ALL
+`)
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cfg.Users[0].Sudo != "ALL=(ALL) NOPASSWD:ALL" {
+		t.Errorf("expected matching sudo directive, got %s", cfg.Users[0].Sudo)
+	}
+}
+
