@@ -143,3 +143,5 @@ func FindKeyLine(node *yaml.Node, key string) int {
 // GroupsField unmarshaler decodes both string scalars and yaml sequence nodes
 
 // File paths and content strings support arbitrary multi-line inline scripts
+
+// User sudo directives can be strings such as ALL=(ALL) NOPASSWD:ALL
