@@ -15,6 +15,7 @@ The two critical failure modes for CAPI worker provisioning:
 1. **`/run` is not mounted at Ignition time.** CAPI's worker template writes `kubeadm-join-config.yaml` to `/run/kubeadm/`. Ignition's own docs state that `/run` and `/tmp` are expected to be mount points and that writing to them during provisioning will not have the intended effect.
 
 2. **`runcmd` has no declarative Ignition equivalent.** The kubeadm join command must run *after* tmpfs mounts are available — otherwise the config it reads from `/run/` doesn't exist yet.
+3. **Storage stage file ownership.** Files written in the storage stage must explicitly define valid user/group names or numeric IDs matching the target Flatcar system users.
 
 This transpiler implements an AST-aware parser and an OS-level translation layer that understands the semantics of Flatcar boot operations.
 
