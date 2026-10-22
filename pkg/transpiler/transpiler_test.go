@@ -284,4 +284,26 @@ write_files:
 	}
 }
 
+func TestTranspileMultipleWriteFiles(t *testing.T) {
+	input := []byte(`
+write_files:
+  - path: /etc/file1.conf
+    content: "content1"
+  - path: /etc/file2.conf
+    content: "content2"
+`)
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("Transpile failed: %v", err)
+	}
+	if len(out.Storage.Files) != 2 {
+		t.Fatalf("Expected 2 files, got %d", len(out.Storage.Files))
+	}
+}
+
+
 
