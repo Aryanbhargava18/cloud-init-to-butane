@@ -214,3 +214,30 @@ users:
 		t.Errorf("expected 0 for empty node, got %d", line)
 	}
 }
+
+func TestParse_CustomFilePermissions(t *testing.T) {
+	input := []byte(`
+write_files:
+  - path: /etc/security.conf
+    permissions: "0600"
+    content: "secure"
+  - path: /usr/local/bin/script.sh
+    permissions: "0755"
+    content: "#!/bin/sh"
+`)
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected parse error: %v", err)
+	}
+	if len(cfg.WriteFiles) != 2 {
+		t.Fatalf("expected 2 files, got %d", len(cfg.WriteFiles))
+	}
+	if cfg.WriteFiles[0].Permissions != "0600" {
+		t.Errorf("expected 0600, got %s", cfg.WriteFiles[0].Permissions)
+	}
+	if cfg.WriteFiles[1].Permissions != "0755" {
+		t.Errorf("expected 0755, got %s", cfg.WriteFiles[1].Permissions)
+	}
+}
+
+
