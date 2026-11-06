@@ -80,11 +80,3 @@ func main() {
 		}
 	}
 }
-
-// improve errors
-
-// improve errors
-
-// refactor soon
-
-// Note: check for leaks
