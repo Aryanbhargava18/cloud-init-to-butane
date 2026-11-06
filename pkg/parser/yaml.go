@@ -133,9 +133,3 @@ func FindKeyLine(node *yaml.Node, key string) int {
 	}
 	return 0
 }
-
-// clean up later
-
-// Note: check for leaks
-
-// TODO: add tests
