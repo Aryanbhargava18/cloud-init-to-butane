@@ -260,3 +260,22 @@ users:
 
 
 
+
+func TestParse_MultipleUsersAuthorizedKeys(t *testing.T) {
+	input := []byte(`users:
+  - name: u1
+    ssh_authorized_keys:
+      - key1
+  - name: u2
+    ssh_authorized_keys:
+      - key2
+`)
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cfg.Users) != 2 {
+		t.Fatalf("expected 2 users, got %d", len(cfg.Users))
+	}
+}
+
