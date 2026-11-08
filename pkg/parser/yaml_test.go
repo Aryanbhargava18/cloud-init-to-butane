@@ -385,3 +385,51 @@ func TestParse_UserSudoDirective(t *testing.T) {
 	}
 }
 
+
+
+func TestParser_EmptyWriteFilesArray(t *testing.T) {
+	input := []byte("write_files: []\n")
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed on empty write_files: %v", err)
+	}
+	if cfg == nil {
+		t.Fatal("expected non-nil config")
+	}
+}
+
+
+func TestParser_HostnameOnlyConfig(t *testing.T) {
+	input := []byte("hostname: node-edge-01\n")
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed on hostname only config: %v", err)
+	}
+	if cfg.Hostname != "node-edge-01" {
+		t.Errorf("expected hostname 'node-edge-01', got '%s'", cfg.Hostname)
+	}
+}
+
+
+func TestParser_EmptyInputHandling(t *testing.T) {
+	input := []byte("")
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed on empty input: %v", err)
+	}
+	if cfg == nil {
+		t.Fatal("expected non-nil config on empty input")
+	}
+}
+
+
+func TestParser_TrailingWhitespaceHandling(t *testing.T) {
+	input := []byte("hostname: whitespace-host   \n\n   ")
+	cfg, _, _, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed with trailing whitespace: %v", err)
+	}
+	if cfg.Hostname != "whitespace-host" {
+		t.Errorf("expected trimmed hostname, got '%s'", cfg.Hostname)
+	}
+}

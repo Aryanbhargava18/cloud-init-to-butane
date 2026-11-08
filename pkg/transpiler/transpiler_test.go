@@ -402,3 +402,120 @@ func TestTranspile_UnitWithDropin(t *testing.T) {
 	}
 }
 
+
+
+func TestTranspiler_StandardOctalPerms(t *testing.T) {
+	input := []byte(`
+write_files:
+  - path: /etc/sample.conf
+    permissions: "0644"
+    content: sample
+`)
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("Transpile failed: %v", err)
+	}
+	if len(out.Storage.Files) != 1 {
+		t.Fatalf("expected 1 file, got %d", len(out.Storage.Files))
+	}
+}
+
+
+func TestTranspiler_UserWithoutGroups(t *testing.T) {
+	input := []byte(`
+users:
+  - name: solo-user
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1...
+`)
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("Transpile failed: %v", err)
+	}
+	if len(out.Passwd.Users) != 1 {
+		t.Fatalf("expected 1 user, got %d", len(out.Passwd.Users))
+	}
+}
+
+
+func TestTranspiler_MultipleSSHKeys(t *testing.T) {
+	input := []byte(`
+users:
+  - name: multi-key-user
+    ssh_authorized_keys:
+      - ssh-rsa KEY1...
+      - ssh-ed25519 KEY2...
+`)
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("Transpile failed: %v", err)
+	}
+	if len(out.Passwd.Users[0].SSHAuthorizedKeys) != 2 {
+		t.Errorf("expected 2 ssh keys, got %d", len(out.Passwd.Users[0].SSHAuthorizedKeys))
+	}
+}
+
+
+func TestTranspiler_EmptyDirectives(t *testing.T) {
+	input := []byte("#cloud-config\n")
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("Transpile failed: %v", err)
+	}
+	if out.Version != "1.0.0" {
+		t.Errorf("expected Butane version 1.0.0, got %s", out.Version)
+	}
+}
+
+
+func TestTranspiler_HostnameFileGeneration(t *testing.T) {
+	input := []byte("hostname: standalone-node\n")
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("Transpile failed: %v", err)
+	}
+	if len(out.Storage.Files) != 1 || out.Storage.Files[0].Path != "/etc/hostname" {
+		t.Errorf("expected /etc/hostname storage file, got %+v", out.Storage.Files)
+	}
+}
+
+
+func TestTranspiler_SingleFileOverwrite(t *testing.T) {
+	input := []byte(`
+write_files:
+  - path: /etc/motd
+    content: "Welcome to Flatcar"
+    overwrite: true
+`)
+	cfg, root, _, err := parser.Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed: %v", err)
+	}
+	out, err := Transpile(cfg, root)
+	if err != nil {
+		t.Fatalf("Transpile failed: %v", err)
+	}
+	if len(out.Storage.Files) != 1 {
+		t.Fatalf("expected 1 file, got %d", len(out.Storage.Files))
+	}
+}

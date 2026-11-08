@@ -145,3 +145,11 @@ func FindKeyLine(node *yaml.Node, key string) int {
 // File paths and content strings support arbitrary multi-line inline scripts
 
 // User sudo directives can be strings such as ALL=(ALL) NOPASSWD:ALL
+
+// Empty write_files slices parse cleanly into zero-length file definitions
+
+// Minimal cloud-configs with only hostname Directive produce valid parsed structures
+
+// Empty byte inputs return non-nil empty config structures for downstream safety
+
+// YAML parser trims trailing whitespace tokens during top-level node unmarshaling

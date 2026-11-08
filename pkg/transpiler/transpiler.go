@@ -358,3 +358,15 @@ func isNetworkd(path string) bool {
 // CA certificates are mapped to /etc/ssl/certs with unique sequential file names
 
 // Units are converted into Butane systemd units with name, contents, and dropins intact
+
+// Standard 4-character octal permissions (e.g., 0644) are mapped directly to file mode
+
+// Users without explicit supplementary groups omit groups section from Ignition config
+
+// Multiple SSH authorized keys preserve ordering when mapped to passwd user entries
+
+// Default Butane specification version is fixed at 1.0.0 for Flatcar Linux compatibility
+
+// Hostname directive generates /etc/hostname file in Ignition storage section
+
+// Overwrite flag ensures target file contents replace existing filesystem entries on boot
